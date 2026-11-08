@@ -1,0 +1,93 @@
+/* I went with plain CSS with no UI library because the challenge asks for a simple layout,
+   and it keeps dependencies to a minimum. */
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, sans-serif; background: #f5f6f8; color: #1f2328; }
+a { color: inherit; }
+
+.header { background: #1f2328; padding: 1rem; }
+.brand { color: #fff; font-weight: 600; text-decoration: none; }
+.container { max-width: 720px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+.toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.toolbar h1 { margin: 0; font-size: 1.5rem; }
+
+.btn { display: inline-block; border: 1px solid #d0d7de; background: #fff; border-radius: 6px;
+  padding: 0.45rem 0.9rem; font-size: 0.9rem; cursor: pointer; text-decoration: none; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-primary { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+.btn-danger { color: #cf222e; }
+.btn-danger-solid { background: #cf222e; border-color: #cf222e; color: #fff; }
+
+/* I used a solid red confirm button in the modal (unlike the outlined "Excluir" in the list)
+   so the final, irreversible step stands out from "Cancelar". */
+.modal { border: none; border-radius: 8px; padding: 1.25rem; width: min(420px, calc(100% - 2rem));
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+.modal::backdrop { background: rgba(31, 35, 40, 0.5); }
+.modal h2 { margin: 0 0 0.5rem; font-size: 1.15rem; }
+.modal p { margin: 0 0 1.25rem; color: #57606a; overflow-wrap: anywhere; }
+
+/* I used minmax(0, 1fr) because a plain 1fr column grows to fit long content
+   and pushes the cards past the screen width. */
+.task-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; }
+.task { background: #fff; border: 1px solid #d0d7de; border-radius: 8px; padding: 1rem;
+  display: flex; justify-content: space-between; gap: 1rem; }
+.task h2 { margin: 0 0 0.25rem; font-size: 1.05rem; }
+/* I preferred to always show the full text (instead of cutting it with "…") and let long
+   words wrap. Tradeoff: cards have different heights depending on their content. */
+.task h2, .task p { overflow-wrap: anywhere; }
+.task-content { flex: 1; min-width: 0; }
+/* I picked pre-wrap so line breaks typed in the description show up in the list. */
+.task p { margin: 0 0 0.5rem; color: #57606a; white-space: pre-wrap; }
+.task p.task-empty { color: #8c959f; font-style: italic; }
+.task small { display: block; color: #8c959f; }
+.task-actions { display: flex; gap: 0.5rem; align-items: flex-start; }
+/* On small screens I moved the buttons below the text because, side by side,
+   they leave too little room for the title and description. */
+@media (max-width: 480px) {
+  .task { flex-direction: column; gap: 0.75rem; }
+}
+
+.alert { padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1rem; }
+.alert-success { background: #dafbe1; color: #116329; }
+.alert-error { background: #ffebe9; color: #a40e26; }
+
+.muted { color: #8c959f; text-align: center; padding: 1rem; }
+
+.form { background: #fff; border: 1px solid #d0d7de; border-radius: 8px; padding: 1.25rem;
+  display: grid; gap: 1rem; }
+.field { display: grid; gap: 0.35rem; }
+.field label { font-weight: 600; }
+.field input, .field textarea { font: inherit; padding: 0.5rem; border: 1px solid #d0d7de; border-radius: 6px; }
+.field textarea { min-height: 120px; resize: vertical; }
+.field-error { color: #cf222e; font-size: 0.85rem; }
+.field input[aria-invalid="true"] { border-color: #cf222e; }
+.form-actions { display: flex; gap: 0.5rem; justify-content: flex-end; }
+
+/* I gave the skeletons a moving shine because it signals that something is loading,
+   while a static grey block can look like a broken page. */
+.skeleton {
+  border-radius: 6px;
+  background: linear-gradient(90deg, #e6e8eb 25%, #f2f3f5 50%, #e6e8eb 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shine 1.4s ease-in-out infinite;
+}
+/* I opted to apply the skeleton to real elements (h2, p, .btn) and hide only their text and
+   border, so each placeholder gets exactly the real element's size. */
+.skeleton-text { color: transparent !important; border-color: transparent !important; user-select: none; cursor: default; }
+.skeleton-button { height: 2.1rem; width: 4.5rem; }
+.skeleton-button-wide { width: 8rem; }
+.skeleton-label { height: 1rem; width: 6rem; }
+.skeleton-input { height: 2.4rem; }
+.skeleton-textarea { height: 120px; }
+
+@keyframes skeleton-shine {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+/* I turn the animation off for users who ask the system for less motion (accessibility). */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; }
+}
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
